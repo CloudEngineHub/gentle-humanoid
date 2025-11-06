@@ -1,0 +1,111 @@
+
+<h2 align="center">
+  <!-- <img src="docs/gentle_humanoid_logo.png" height="24" style="vertical-align: bottom; margin-right: 0px;" /> -->
+  <a href="https://gentle-humanoid.axell.top">GentleHumanoid: Learning Upper-body Compliance for Contact-rich Human and Object Interaction</a>
+</h2>
+
+[![Home Page](https://img.shields.io/badge/Project-Website-C27185.svg)](https://gentle-humanoid.axell.top/#/) 
+[![arXiv](https://img.shields.io/badge/Arxiv-XX-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/XX) 
+[![Video](https://img.shields.io/badge/Video-Demo-FF0000.svg?logo=youtube)](https://youtu.be/XXXXXXXXXXX)
+[![Online Demo](https://img.shields.io/badge/Online-Demo-3B82F6.svg?logo=demo)](https://gentle-humanoid.axell.top/#/demo)
+
+This is an official implementation of GentleHumanoid, more details please check our [Project](https://gentle-humanoid.axell.top) page. 
+
+**GentleHumanoid** learns a universal whole-body motion control policy with upper-body compliance and adjustable force limits, allowing smooth, stable, and safe interactions with humans and objects.
+
+Key Features:
+1. Upper-body compliance: Coordinated responses across the shoulder, elbow, and wrist for natural, adaptive motion.  
+2. Unified interaction modeling: Handles both resistive and human-guided contact forces through spring-based dynamics.  
+3. Safety-aware control: Supports tunable force thresholds to ensure safe human–robot interaction.  
+3. Real-world validation: Demonstrated in simulation and on the Unitree G1, generalizing across diverse motions and interactions.  
+
+Try Our [Online Demo](https://gentle-humanoid.axell.top/#/demo)
+
+https://github.com/user-attachments/assets/60412d44-9c35-4934-ac14-2a906f16c37c
+
+## TODO
+- [x] Release sim2sim code, sim2real code 
+- [x] Release pretrained model 
+- [ ] Release training code and data
+- [ ] ...
+
+## Getting Started 
+Clone the repo:
+```
+git clone https://github.com/Axellwppr/gentle-humanoid
+cd gentle-humanoid
+``` 
+
+## Install 
+- Create conda environment
+  ```
+  conda create -n gentle python=3.10
+  conda activate gentle
+  ```
+- Install the Unitree SDK2 Python bindings in virtual environment (follow the [official Unitree guide](https://github.com/unitreerobotics/unitree_sdk2_python))
+- Install Python deps:
+  ```bash
+  pip install -r requirements.txt
+  ```
+Tested on Ubuntu 22.04 with Python 3.10
+
+## Run Sim2Sim
+1. Start the simulator (state publisher + keyboard bridge):
+   ```bash
+   python3 src/sim2sim.py --xml_path assets/g1/g1.xml
+   ```
+   Leave the terminal focused so the keyboard mapping works.
+2. In another terminal launch the high-level controller:
+   ```bash
+   python3 src/deploy.py --net lo --sim2sim
+   ```
+3. Flow:
+   - Controller waits in zero-torque mode until it receives the simulated state.
+   - Press `s` in the sim terminal to let the robot move to the default pose.
+   - Press `a` in the sim terminal to start tracking policy
+   - See [Motion Switching](#motion-switching) to replay different motions.
+   - Use `u` and `d` to increase/decrease the force threshold (default 10N).
+   - Press `x` to exit gracefully.
+
+You can double-click a link in the simulation window and Ctrl + right-drag to apply an external force to that link.
+
+https://github.com/user-attachments/assets/19c929eb-9731-4734-b021-d22356a839c9
+
+## Run Sim2Real
+1. Power on G1 and connect to your PC.
+2. Launch the controller pointing at the appropriate interface:
+   ```bash
+   python3 src/deploy.py --net <robot_iface> --real
+   ```
+3. The state machine matches Sim2Sim but with `physical remote controller` input
+   - Zero torque
+   - (Press `S`) → move to default pose
+   - Place robot on the ground
+   - (Press `A`) → run the active policy
+   - See [Motion Switching](#motion-switching) to replay different motions.
+   - Use `up` and `down` buttons to increase/decrease the force threshold (default 10N).
+   - (Press `select`) → exit gracefully
+
+**⚠️ Always test motions in Sim2Sim before running them on the real robot.**
+
+**⚠️ Do not blindly trust the RL policy. Always have emergency stop measures and qualified safety personnel on site.**
+
+## Motion Switching
+- The tracking policy accepts motion change commands while it is active.
+- Open a terminal and run the motion selector:
+  ```bash
+  python3 src/motion_select.py
+  ```
+- Usage tips:
+  - Type the motion name or its index (`list` prints the menu). Press Enter with an empty line to resend the previous choice.
+  - `r` reloads the YAML file if you edit it; `q` exits the selector.
+- Selection rules:
+  - The policy only starts a new motion when the current clip has finished and the robot is in the `default` clip (or you explicitly request `default`).
+  - Sending `default` always fades back to the idle pose.
+
+https://github.com/user-attachments/assets/25c3596e-5b79-45cd-a4fd-3974b314e01d
+
+## Acknowledge 
+  **[TODO: add reference code]**
+
+## LICENSE
