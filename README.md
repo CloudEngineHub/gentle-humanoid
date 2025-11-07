@@ -6,7 +6,7 @@
 
 [![Home Page](https://img.shields.io/badge/Project-Website-C27185.svg)](https://gentle-humanoid.axell.top/#/) 
 [![arXiv](https://img.shields.io/badge/Arxiv-XX-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/XX) 
-[![Video](https://img.shields.io/badge/Vide-Demo-FF0000.svg?logo=youtube)](https://www.youtube.com/watch?v=rF6N2o0IQJg)
+[![Video](https://img.shields.io/badge/Video-Demo-FF0000.svg?logo=youtube)](https://www.youtube.com/watch?v=rF6N2o0IQJg)
 [![Online Demo](https://img.shields.io/badge/Online-Demo-3B82F6.svg?logo=demo)](https://gentle-humanoid.axell.top/#/demo)
 
 This is an official implementation of GentleHumanoid, more details please check our [Project](https://gentle-humanoid.axell.top) page. 
@@ -74,8 +74,9 @@ You can double-click a link in the simulation window and Ctrl + right-drag to ap
 https://github.com/user-attachments/assets/19c929eb-9731-4734-b021-d22356a839c9
 
 ## Run Sim2Real
-1. Power on G1 and connect to your PC.
-2. Launch the controller pointing at the appropriate interface:
+Please read [official document](https://support.unitree.com/home/en/G1_developer/remote_control) before you work on G1. 
+1. Power on G1 and connect to your PC. 
+2. Turn on Controller, press L2+R2 for debugging mode. Run Sim2Real: 
    ```bash
    python3 src/deploy.py --net <robot_iface> --real
    ```
@@ -88,9 +89,8 @@ https://github.com/user-attachments/assets/19c929eb-9731-4734-b021-d22356a839c9
    - Use `up` and `down` buttons to increase/decrease the force threshold (default 10N).
    - (Press `select`) → exit gracefully
 
-**⚠️ Always test motions in Sim2Sim before running them on the real robot.**
-
-**⚠️ Do not blindly trust the RL policy. Always have emergency stop measures and qualified safety personnel on site.**
+⚠️ Please always test motions in Sim2Sim before deploying to real robot.  
+⚠️ Please do not blindly trust the RL policy. Always have emergency stop (`select`) ready.
 
 ## Motion Switching
 - The tracking policy accepts motion change commands while it is active.
